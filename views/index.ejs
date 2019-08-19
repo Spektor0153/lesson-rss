@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/css/bootstrap.css' />
+    <link rel='stylesheet' href='/css/style.css' />
+    <script src="/js/jquery-3.4.1.min.js"></script>
+	<script src="/js/popper.min.js"></script>
+	<script src="/js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+
+				$('#send_form').on('click', ()=> {
+					  var formData = $('#form_rss').serialize();
+		       		  $.ajax({ 
+		       		  	url: '/save_rss',
+		       		  	type: 'POST',
+		       		  	data: formData,
+		       		  	success: function(data){
+		       		  			console.log(data);
+		       		  			load_rss_list(data);
+		       		  	}, 
+		       		  	error: function(jqXHR, textStatus, err){
+		       		  		console.log(err);
+		       		  	}
+		       		  });
+		       	});
+
+				 
+
+				$('#rss_list').on('click', '.rss_link_li', function() {
+		       		  $.ajax({ 
+		       		  	url: '/load_rss',
+		       		  	type: 'POST',
+		       		  	data: {'id_rss': $(this).attr('id_rss')},
+		       		  	success: function(data){
+		       		  			console.log(JSON.parse(data));
+		       		  			load_rss_data(JSON.parse(data));
+		       		  	}, 
+		       		  	error: function(jqXHR, textStatus, err){
+		       		  		console.log(err);
+		       		  	}
+		       		  });
+		       	});
+
+				const load_rss_list = (data)=>{
+					$('#rss_list').empty();
+					for (var i=0; i<data.length; i++){
+						$('#rss_list').append(' <li class="rss_link_li list-group-item d-flex justify-content-between align-items-center" id_rss="'+data[i].id+'">"'+data[i].name+'" <span class="badge badge-primary badge-pill">'+data[i].count_news+'</span></li>');
+					}
+				}  	
+
+				const load_rss_data = (data)=>{
+					$('#rss_data').empty();
+					for (var i=0; i<data.length; i++){
+						$('#rss_data').append(' <div class="card"><div class="card-header" id="rss_data_'+i+'"> <h2 class="mb-0"><button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse_data_'+i+'" aria-expanded="true" aria-controls="collapse_data_'+i+'">'+data[i].title+'</button></h2></div><div id="collapse_data_'+i+'" class="collapse" aria-labelledby="rss_data_'+i+'" data-parent="#rss_data"><div class="card-body"><p>'+data[i].description+'</p><a target="_blank" href="'+data[i].link+'">'+data[i].link+'</a></div></div></div>');
+					}
+				}  	
+				
+				$('#rss_list').on('click', '.rss_link_li', function(){
+					$('.rss_link_li').removeClass('my_active');
+					$(this).addClass('my_active');
+				});
+		     
+
+		});
+	</script>
+  </head>
+  <body>
+    <div class="container">
+    	<div class="row">
+    		<div class="col-md-12">
+    			<h1><%= title %></h1>
+    		</div>
+    		<div class="col-md-4">
+    			
+   				<form id="form_rss" class="" action="save_rss" method="post">
+					<div class="mb-3">
+						<h5>Введите ссылку RSS:</h5>
+						<input type="text" class="form-control" id="input_name" name="rss_name" placeholder="RSS ссылка" value="" autocomplete="off" required>
+						<button id="send_form" type="button" class="btn btn-success">Сохранить рассылку</button>	
+					</div>
+				</form>
+				
+				<div class="block_rss_table">
+						<h5>Список сохранённых RSS:</h5>
+						<ul id="rss_list" class="list-group">
+					      <% for(var i=0; i<rss_list.length; i++) {%>
+				                <li class="rss_link_li list-group-item d-flex justify-content-between align-items-center" id_rss="<%=rss_list[i].id %>"><%=rss_list[i].name %> <span class="badge badge-primary badge-pill"><%=rss_list[i].count_news %></span></li>
+				            <%} %>
+				        </ul>    
+			
+				</div>
+    		</div>
+    		<div class="col-md-8">
+
+    			<h5>Лента новостей:</h5>
+
+    			<div class="accordion" id="rss_data">
+
+
+				
+				</div>
+    		</div>	
+    	</div>
+    </div>
+   
+
+  </body>
+</html>

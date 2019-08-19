@@ -1,0 +1,23 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+h1 {
+	margin-bottom: 20px;
+}
+#send_form {
+	    margin-top: 15px;
+    width: 100%;
+}
+.block_rss_table {
+	    margin-top: 60px;
+}
+.rss_link_li.my_active {
+	background-color: #3f9bff;
+	color: white;
+}
